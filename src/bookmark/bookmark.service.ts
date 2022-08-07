@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Bookmark from 'src/entities/bookmark.entity';
-import { Repository } from 'typeorm';
-import CreateBookmarkDto from './dto/create-bookmark.dto';
+import { DeepPartial, Repository } from 'typeorm';
 
 @Injectable()
 export class BookmarkService {
@@ -11,8 +10,9 @@ export class BookmarkService {
     private readonly bookmarkRepo: Repository<Bookmark>,
   ) {}
 
-  async create(dto: CreateBookmarkDto) {
-    return this.bookmarkRepo.save(dto);
+  async create(dto: DeepPartial<Bookmark>) {
+    let newEntry = await this.bookmarkRepo.create(dto);
+    return this.bookmarkRepo.save(newEntry);
   }
 
   async get(id: string) {
@@ -25,7 +25,7 @@ export class BookmarkService {
       .getOne();
   }
 
-  async update(id: string, dto: Omit<CreateBookmarkDto, 'user'>) {
+  async update(id: string, dto: DeepPartial<Bookmark>) {
     return this.bookmarkRepo.update({ id: id }, dto);
   }
 

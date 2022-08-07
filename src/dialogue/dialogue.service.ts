@@ -42,20 +42,23 @@ export class DialogueService {
   }
 
   async get(dialogueId: string) {
-    return this.dialogueRepo
+    let result = await this.dialogueRepo
       .createQueryBuilder('dialogue')
-      .leftJoinAndSelect('dialogue.messages', 'message')
       .leftJoinAndSelect('dialogue.owner', 'account')
       .where('dialogue.id = :id', {
         id: dialogueId,
       })
       .getOne();
+
+    result.messages = await this.getMessages(dialogueId);
+    return result;
   }
 
   async getMessagesUntilDate(dialogueId: string, date: Date) {
     const result = await this.dialogueRepo
       .createQueryBuilder('dialogue')
       .leftJoinAndSelect('dialogue.messages', 'message')
+      .leftJoinAndSelect('message.user', 'account')
       .where('dialogue.id = :id AND message.created_at < :date', {
         id: dialogueId,
         date: format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"),
@@ -64,7 +67,19 @@ export class DialogueService {
     if (!result) return [];
     return result.messages;
   }
-
+  async getMessages(dialogueId: string) {
+    const result = await this.dialogueRepo
+      .createQueryBuilder('dialogue')
+      .leftJoinAndSelect('dialogue.messages', 'message')
+      .leftJoinAndSelect('message.user', 'account')
+      .where('dialogue.id = :id', {
+        id: dialogueId,
+      })
+      .orderBy('message.created_at', 'ASC')
+      .getOne();
+    if (!result) return [];
+    return result.messages;
+  }
   async getUserDialogues(userId: string) {
     let userDialogues = await this.accountDialogueRepo
       .createQueryBuilder('acc_d')

@@ -1,7 +1,6 @@
-import Account from 'src/entities/account.entity';
-import Post from 'src/entities/post.entity';
+import { IsString } from 'class-validator';
 
 export default class CreateBookmarkDto {
-  user: Account;
-  post: Post;
+  @IsString()
+  postId: string;
 }
