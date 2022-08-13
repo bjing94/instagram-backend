@@ -29,8 +29,11 @@ export class UserController {
   // }
 
   @UseGuards(JWTAuthGuard)
-  @Get('user/self')
+  @Get('user')
   async getSelf(@Request() req: any) {
-    return this.userService.get(req.user.id);
+    const { passwordHash, ...rest } = await this.userService.get(req.user.id);
+    return {
+      ...rest,
+    };
   }
 }

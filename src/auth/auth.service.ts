@@ -47,6 +47,10 @@ export class AuthService {
     return null;
   }
 
+  async validateToken(token: string) {
+    return this.jwtService.verifyAsync(token);
+  }
+
   async login(user: Account) {
     const payload: JwtPayloadDto = { sub: user.id };
 

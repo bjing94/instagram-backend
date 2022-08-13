@@ -1,7 +1,14 @@
+import { IsOptional, IsString } from 'class-validator';
+
 export default class CreateCommentDto {
+  @IsString()
   body: string;
 
-  postId: string;
+  @IsOptional()
+  @IsString()
+  postId?: string;
 
-  parentCommentId: string;
+  @IsOptional()
+  @IsString()
+  parentCommentId?: string;
 }

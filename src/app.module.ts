@@ -25,6 +25,8 @@ import Message from './entities/message.entity';
 import AccountDialogue from './entities/account-dialogue.entity';
 import Dialogue from './entities/dialogue.entity';
 import AccountSocket from './entities/account-socket.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -68,6 +70,9 @@ import AccountSocket from './entities/account-socket.entity';
     UserModule,
     DialogueModule,
     SocketModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'images'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

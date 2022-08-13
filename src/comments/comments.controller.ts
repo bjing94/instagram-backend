@@ -11,6 +11,8 @@ import {
   Post,
   Request,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { JWTAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -26,6 +28,8 @@ export class CommentsController {
     private readonly commentsService: CommentsService,
     private readonly authService: AuthService,
   ) {}
+
+  @UsePipes(new ValidationPipe())
   @UseGuards(JWTAuthGuard)
   @Post()
   async create(@Body() dto: CreateCommentDto, @Request() request: any) {
@@ -50,7 +54,7 @@ export class CommentsController {
       });
       return newComment;
     }
-    return null;
+    throw new BadRequestException();
   }
 
   @Get(':id')

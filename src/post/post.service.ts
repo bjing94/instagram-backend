@@ -32,12 +32,20 @@ export class PostService {
   }
 
   async getAll() {
-    return this.postRepo
+    let result = await this.postRepo
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.comments', 'comments')
       .leftJoinAndSelect('post.post_imgs', 'post_img')
       .leftJoinAndSelect('post_img.img', 'img')
+      .leftJoinAndSelect('post.user', 'account AS post_acc')
+      .leftJoinAndSelect('post.likes', 'like')
+      .leftJoinAndSelect('like.user', 'acount AS like_acc')
+      .leftJoinAndSelect('comments.user', 'acount AS comment_acc')
       .getMany();
+    return result;
+    // result.forEach((item)=>{
+    //   item.likes[0].user
+    // })
   }
 
   async update(id: string, dto: any) {
